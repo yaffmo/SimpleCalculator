@@ -24,12 +24,12 @@ namespace SimpleCalculator
 
         private static bool IsContain(string pathRef)
         {
-            List<string> listOfStrings = new List<string>()
+            List<string> pathKeyword = new List<string>()
             {
                 "G:","Volumes",@"\\nas","smb"
             };
 
-            return listOfStrings.Any(pathRef.Contains);
+            return pathKeyword.Any(item => pathRef.Contains(item));
         }
 
         private static void ToSwitch(string text)
