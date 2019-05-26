@@ -6,125 +6,90 @@ namespace SimpleCalculator
 {
     class Program
     {
-
         static void Main(string[] args)
         {
-            if (CopyToSwitch() == false)
+            var text = TextCopy.Clipboard.GetText();
+            if (IsContain(text))
             {
-                InputToPath();
+                ToSwitch(text);
             }
+            else
+            {
+                Console.Write("請輸入要轉換的路徑:");
+                string input = Console.ReadLine();
+                ToSwitch(input);
+            }
+
         }
 
-        private bool isContain(string pathRef)
+        private static bool IsContain(string pathRef)
         {
             List<string> listOfStrings = new List<string>()
             {
                 "G:","Volumes",@"\\nas","smb"
             };
-            
+
             return listOfStrings.Any(pathRef.Contains);
         }
-        private static bool CopyToSwitch()
-        {
-            var text = TextCopy.Clipboard.GetText();
 
+        private static void ToSwitch(string text)
+        {
             if (text.Contains("G:"))
             {
                 PCSwitcher(text);
-                return true;
             }
             else if (text.Contains("Volumes"))
             {
                 MACSwitcher(text);
-                return true;
             }
             else if (text.Contains(@"\\nas"))
             {
                 PCNasSwitcher(text);
-                return true;
             }
             else if (text.Contains("smb"))
             {
                 MACNasSwitcher(text);
-                return true;
-            }
-            else
-            {
-                return false;
             }
         }
 
-        private static void InputToPath()
+        private static void MACNasSwitcher(string path)
         {
-            Console.Write("請輸入要轉換的路徑:");
-            string input = Console.ReadLine();
-
-            if (input.Contains("G:"))
-            {
-                PCSwitcher(input);
-            }
-            else if (input.Contains("Volumes"))
-            {
-                MACSwitcher(input);
-            }
-            else if (input.Contains(@"\\nas"))
-            {
-                PCNasSwitcher(input);
-            }
-            else if (input.Contains("smb:"))
-            {
-                MACNasSwitcher(input);
-                
-            }
-            
-        }
-
-        private static void MACNasSwitcher(string text)
-        {
-            string path = $@"{text}";
             var position = path.Replace(@"smb:/", @"\");
             var result = position.Replace("/", @"\");
 
-            Console.WriteLine(result);
-            TextCopy.Clipboard.SetText(result);
-            Console.ReadKey();
+            ShowSwitchResult(result);
         }
 
-        private static void PCNasSwitcher(string text)
+        private static void PCNasSwitcher(string path)
         {
-            string path = $@"{text}";
             var position = path.Replace(@"\", "/");
             var result = $@"smb:{position}";
 
-            Console.WriteLine(result);
-            TextCopy.Clipboard.SetText(result);
-            Console.ReadKey();
+            ShowSwitchResult(result);
         }
 
-
-        private static void MACSwitcher(string input)
+        private static void MACSwitcher(string path)
         {
 
-            string path = $@"{input}";
             var position = path.Replace(@"/Volumes/GoogleDrive", "G:");
             var result = position.Replace("/", @"\");
 
-            Console.WriteLine(result);
-            TextCopy.Clipboard.SetText(result);
-            Console.ReadKey();
+            ShowSwitchResult(result);
         }
 
-        private static void PCSwitcher(string input)
+        private static void PCSwitcher(string path)
         {
-            string path = $@"{input}";
             var position = path.Replace(@"\", "/");
             var result = position.Replace(@"G:", "/Volumes/GoogleDrive");
 
+            ShowSwitchResult(result);
+        }
+
+        private static void ShowSwitchResult(string result)
+        {
             Console.WriteLine(result);
             TextCopy.Clipboard.SetText(result);
             Console.ReadKey();
         }
-
-
     }
 }
